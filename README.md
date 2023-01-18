@@ -31,6 +31,7 @@ For example:
 ## Pair: 
 The player scores the sum of the two highest matching dice.
 For example, when placed on "pair":
+1,1,6,2,6 scores 12 (6+6)
   
 -   3,3,3,4,4 scores 8 (4+4)
 -   1,1,6,2,6 scores 12 (6+6)
