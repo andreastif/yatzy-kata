@@ -18,8 +18,8 @@ public enum Category {
 
 	private final int value;
 
-	Category(final int newValue) {
-		value = newValue;
+	Category(final int value) {
+		this.value = value;
 	}
 
 	public int getValue() {
