@@ -11,8 +11,8 @@ public class YatzyScorer {
         switch (category) {
             case CHANCE -> sum = calculateChance(diceArray);
             case YATZY -> sum = caclulateYatzy(diceArray);
-            case PAIRS -> sum = calculatePairs(diceArray);
             case ACES, SIXES, TWOS, THREES, FOURS, FIVES -> sum = calculateUpperSection(diceArray, category);
+            case PAIRS -> sum = calculatePairs(diceArray);
         }
         return sum;
     }
