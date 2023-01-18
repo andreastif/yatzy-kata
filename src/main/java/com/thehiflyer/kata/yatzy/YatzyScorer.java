@@ -2,6 +2,9 @@ package com.thehiflyer.kata.yatzy;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class YatzyScorer {
     public int calculateScore(Category category, YatzyRoll roll) {
@@ -13,8 +16,22 @@ public class YatzyScorer {
             case YATZY -> sum = caclulateYatzy(diceArray);
             case ACES, SIXES, TWOS, THREES, FOURS, FIVES -> sum = calculateUpperSection(diceArray, category);
             case PAIRS -> sum = calculatePairs(diceArray);
+            case TWOPAIRS -> sum = calculateTwoPair(diceArray);
+            case THREEOFAKIND -> sum = calculateThreeOfAkind(diceArray);
         }
         return sum;
+    }
+
+
+    private int calculateThreeOfAkind(int[] diceArray) {
+        int val = 0;
+        Map<Integer, Long> diceCount = Arrays.stream(diceArray).boxed().collect(Collectors.groupingBy(values -> values, Collectors.counting()));
+        for (Map.Entry<Integer, Long> valuePair : diceCount.entrySet()) {
+            if (valuePair.getValue() >=3) {
+                val += valuePair.getKey() * 3;
+            }
+        }
+        return val;
     }
 
     private int calculateChance(int[] diceArray) {
@@ -67,5 +84,28 @@ public class YatzyScorer {
             }
         }
         return val * 2;
+    }
+
+    private int calculateTwoPair(int[] rollResultArray) {
+        int score = 0;
+
+        // Vi Grupperar alla nummer i rollResultArray
+        Map<Integer, Long> numbers = Arrays.stream(rollResultArray)
+                .boxed()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        // Sparar alla par till en ny map där alla values är minst 2 eller mer
+        Map<Integer, Long> filteredPairs = numbers.entrySet().stream()
+                .filter(key -> key.getValue() >= 2)
+                .collect(Collectors.toMap(key -> key.getKey(), value -> value.getValue()));
+
+
+        // Kolla om de finns minst 2 Entry, om de gör, summera alla values i entry
+        if (filteredPairs.size() >= 2) {
+            score += filteredPairs.keySet().stream()
+                    .mapToInt(val -> val.intValue() * 2).sum();
+        }
+
+        return score;
     }
 }
