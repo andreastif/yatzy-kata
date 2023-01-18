@@ -1,4 +1,4 @@
-# Kata description
+    # Kata description
 The objective of this kata is to build a scoring "service". You're not expected to write a complete game with
 dice rolls and automatic best hand selections (although you can if you want to and have time). Rather, given
 a roll, you're supposed to score that roll given a specified category the player wants to use it for. The categories

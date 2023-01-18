@@ -1,5 +1,6 @@
 package com.thehiflyer.kata.yatzy;
 
+
 public enum Category {
 	CHANCE(0),
 	YATZY(0),

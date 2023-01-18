@@ -7,63 +7,65 @@ public class YatzyScorer {
     public int calculateScore(Category category, YatzyRoll roll) {
         int sum = 0;
         int[] diceArray = roll.getDice();
-        if (category == Category.CHANCE) {
-            for (int num : diceArray) {
-                sum += num;
-            }
-        }
-        if (category == Category.YATZY) {
-            boolean sumShouldBeZero = false;
-            //Gullig liten metod för att casta till en list.
-            List<Integer> list = Arrays.stream(diceArray).boxed().toList();
-            int first = list.get(0);
-            for (int num : list) {
-                if (num != first) {
-                    sumShouldBeZero = true;
-                    break;
-                }
-            }
-            if (!sumShouldBeZero) {
-                sum = 50;
-            }
-        }
 
-        if (category == Category.PAIRS) {
-            sum = calculatePairs(diceArray);
-        }
-
-        //TODO ÅTERKOM TILL CATEGORY?
-        if (category == Category.ACES || category == Category.TWOS || category == Category.THREES
-                || category == Category.FOURS || category == Category.FIVES || category == Category.SIXES) {
-            sum = calculateUpperSection(diceArray, category);
-
+        switch (category) {
+            case CHANCE -> sum = calculateChance(diceArray);
+            case YATZY -> sum = caclulateYatzy(diceArray);
+            case PAIRS -> sum = calculatePairs(diceArray);
+            case ACES, SIXES, TWOS, THREES, FOURS, FIVES -> sum = calculateUpperSection(diceArray, category);
         }
         return sum;
+    }
+
+    private int calculateChance(int[] diceArray) {
+        int val = 0;
+        for (int num : diceArray) {
+            val += num;
+        }
+        return val;
+    }
+
+    private int caclulateYatzy(int[] diceArray) {
+        boolean sumShouldBeZero = false;
+        //Gullig liten metod för att casta till en list.
+        List<Integer> list = Arrays.stream(diceArray).boxed().toList();
+        int first = list.get(0);
+        int val = 0;
+        for (int num : list) {
+            if (num != first) {
+                sumShouldBeZero = true;
+                break;
+            }
+        }
+        if (!sumShouldBeZero) {
+            val = 50;
+        }
+        return val;
     }
 
     private int calculateUpperSection(int[] diceArray, Category category) {
         int expectedVal = category.getValue();
-        int sum = 0;
+        int val = 0;
         for (int num : diceArray) {
             if (num == expectedVal) {
-                sum += num;
+                val += num;
             }
         }
-        return sum;
+        return val;
     }
 
 
     private int calculatePairs(int[] diceArray) {
-        int temp = 0;
+        int val = 0;
         for(int i = 0; i < diceArray.length; i++){
             for(int j = i+1; j < diceArray.length; j++){
                 if (diceArray[i] == diceArray[j]) {
-                    if (diceArray[i] > temp) {
-                        temp = diceArray[i];
+                    if (diceArray[i] > val) {
+                        val = diceArray[i];
                     }
                 }
             }
         }
-        return temp * 2;
+        return val * 2;
     }
 }
