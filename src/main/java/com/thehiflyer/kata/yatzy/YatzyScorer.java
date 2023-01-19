@@ -17,21 +17,11 @@ public class YatzyScorer {
             case ACES, SIXES, TWOS, THREES, FOURS, FIVES -> sum = calculateUpperSection(diceArray, category);
             case PAIRS -> sum = calculatePairs(diceArray);
             case TWOPAIRS -> sum = calculateTwoPair(diceArray);
-            case THREEOFAKIND -> sum = calculateThreeOfAkind(diceArray);
+            case THREEOFAKIND -> sum = calculateThreeOfAKind(diceArray);
+            case FOUROFAKIND -> sum = calculateFourOfAKind(diceArray);
+            case FULLHOUSE -> sum = calculateFullHouse(diceArray);
         }
         return sum;
-    }
-
-
-    private int calculateThreeOfAkind(int[] diceArray) {
-        int val = 0;
-        Map<Integer, Long> diceCount = Arrays.stream(diceArray).boxed().collect(Collectors.groupingBy(values -> values, Collectors.counting()));
-        for (Map.Entry<Integer, Long> valuePair : diceCount.entrySet()) {
-            if (valuePair.getValue() >=3) {
-                val += valuePair.getKey() * 3;
-            }
-        }
-        return val;
     }
 
     private int calculateChance(int[] diceArray) {
@@ -105,6 +95,64 @@ public class YatzyScorer {
             score += filteredPairs.keySet().stream()
                     .mapToInt(val -> val.intValue() * 2).sum();
         }
+
+        return score;
+    }
+
+
+    private int calculateThreeOfAKind(int[] diceArray) {
+
+        int val = 0;
+
+        //tar in key-values och räknar förekomsten av key-value
+
+        Map<Integer, Long> diceCount = Arrays.stream(diceArray).boxed().collect(Collectors.groupingBy(keyValues -> keyValues, Collectors.counting()));
+        //skapar ett Map.Entry objekt med namnet valuePair. valuePair innehåller både key OCH value. Itererar över alla valuePairs i diceCount.
+        //diceCount måste definieras med .entrySet() annars är det EJ en itererbar lista.
+        for (Map.Entry<Integer, Long> valuePair : diceCount.entrySet()) {
+            if (valuePair.getValue() >=3) {
+                val += valuePair.getKey() * 3;
+            }
+        }
+        return val;
+    }
+
+    private int calculateFourOfAKind(int[] diceArray) {
+        int val = 0;
+
+        //tar in key-values och räknar förekomsten av key-value
+        Map<Integer, Long> diceCount = Arrays.stream(diceArray).boxed().collect(Collectors.groupingBy(keyValues -> keyValues, Collectors.counting()));
+
+        //skapar ett Map.Entry objekt med namnet valuePair. valuePair innehåller både key OCH value. Itererar över alla valuePairs i diceCount.
+        //diceCount måste definieras med .entrySet() annars är det EJ en itererbar lista.
+        for (Map.Entry<Integer, Long> valuePair : diceCount.entrySet()) {
+            if (valuePair.getValue() >=4) {
+                val += valuePair.getKey() * 4;
+            }
+        }
+        return val;
+    }
+
+    private int calculateFullHouse(int[] diceArray) {
+        int score = 0;
+
+        // Vi Grupperar alla nummer i rollResultArray
+        Map<Integer, Long> numbers = Arrays.stream(diceArray)
+                .boxed()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        // Kolla om de finns minst 2 Entry (kåk, 2 par, 3 par tsm), om de gör, summera alla values i entry
+        // tar ej TVÅPAR pga att det är en REST kvar i numbers, därav size = 3.
+        if (numbers.size() == 2) {
+            System.out.println("WORKS!");
+            score += numbers.entrySet().stream()
+                    .mapToInt(val -> (val.getKey() * val.getValue().intValue())).sum();
+        }
+
+        System.out.println(numbers);
+        System.out.println("Score: " + score);
+        System.out.println("\n");
+
 
         return score;
     }

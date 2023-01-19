@@ -54,8 +54,8 @@ For example, when placed on "three of a kind":
     
 -    3,3,3,4,5 scores 9 (3+3+3)
 -    3,3,4,5,6 scores 0
--    3,3,3,3,1 scores 9 (3+3+3)
-
+-    3,3,3,3,1 scores 9 (3+3+3)_
+_
 ## Four of a kind: 
 If there are four dice with the same number, the player
 scores the sum of these dice. 

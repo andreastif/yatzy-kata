@@ -273,6 +273,32 @@ public class YatzyTest {
 	}
 
 	@Test
+	public void twoPairsScoresCorrectly() {
+		// 1,1,2,3,3 scores 8 (1+1+3+3)
+		int score = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 2, 3, 3));
+		assertEquals(8, score);
+
+		// 1,1,2,2,2 scores 6 (1+1+2+2)
+		int score2 = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 2, 2, 2));
+		assertEquals(6, score2);
+
+		// 1,1,2,3,4 scores 0
+		int score3 = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 2, 3, 4));
+		assertEquals(0, score3);
+	}
+
+	@Test
+	public void twoPairsScoresIncorrectly() {
+		// should NOT be 2 ( 1 + 1 )
+		int score = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 2, 1, 3));
+		assertNotEquals(2, score);
+
+		// should NOT be 9 ( 1 + 1 + 1, 3 + 3)
+		int score2 = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 1, 3, 3));
+		assertNotEquals(9, score2);
+	}
+
+	@Test
 	public void threeOfAKindScoresCorrectly() {
 		//should be 3
 		int score = yatzyScorer.calculateScore(Category.THREEOFAKIND, new YatzyRoll(1,1,1,2,2));
@@ -303,30 +329,82 @@ public class YatzyTest {
 	}
 
 	@Test
-	public void twoPairsScoresCorrect() {
-		// 1,1,2,3,3 scores 8 (1+1+3+3)
-		int score = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 2, 3, 3));
+	public void fourOfAKindScoresCorrectly() {
+		//    2,2,2,2,5 scores 8 (2+2+2+2)
+		int score = yatzyScorer.calculateScore(Category.FOUROFAKIND, new YatzyRoll(2,2,2,2,5));
 		assertEquals(8, score);
 
-		// 1,1,2,2,2 scores 6 (1+1+2+2)
-		int score2 = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 2, 2, 2));
-		assertEquals(6, score2);
+		//    2,2,2,5,5 scores 0
+		int score1 = yatzyScorer.calculateScore(Category.FOUROFAKIND, new YatzyRoll(2,2,2,5,5));
+		assertEquals(0, score1);
 
-		// 1,1,2,3,4 scores 0
-		int score3 = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 2, 3, 4));
-		assertEquals(0, score3);
+		//    2,2,2,2,2 scores 8 (2+2+2+2)
+		int score2 = yatzyScorer.calculateScore(Category.FOUROFAKIND, new YatzyRoll(2,2,2,2,2));
+		assertEquals(8, score2);
 	}
+
 
 	@Test
-	public void twoPairsScoresInCorrect() {
-		// should NOT be 2 ( 1 + 1 )
-		int score = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 2, 1, 3));
-		assertNotEquals(2, score);
+	public void fourOfAKindScoresIncorrectly() {
+		// should NOT be 5
+		int score = yatzyScorer.calculateScore(Category.FOUROFAKIND, new YatzyRoll(2,2,2,2,5));
+		assertNotEquals(5, score);
 
-		// should NOT be 9 ( 1 + 1 + 1, 3 + 3)
-		int score2 = yatzyScorer.calculateScore(Category.TWOPAIRS, new YatzyRoll(1, 1, 1, 3, 3));
-		assertNotEquals(9, score2);
+		// should NOT be 6
+		int score1 = yatzyScorer.calculateScore(Category.FOUROFAKIND, new YatzyRoll(2,2,2,5,5));
+		assertNotEquals(6, score1);
+
+		// should NOT be 10
+		int score2 = yatzyScorer.calculateScore(Category.FOUROFAKIND, new YatzyRoll(2,2,2,2,2));
+		assertNotEquals(10, score2);
 	}
+
+
+
+	@Test
+	public void fullHouseScoresCorrectly() {
+		//    1,1,2,2,2 scores 8 (1+1+2+2+2)
+		int score = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(1,1,2,2,2));
+		assertEquals(8, score);
+
+		//    2,2,3,3,4 scores 0
+		int score1 = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(2,2,3,3,4));
+		assertEquals(0, score1);
+
+		//    4,4,4,4,4 scores 0
+		int score2 = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(4,4,4,4,4));
+		assertEquals(0, score2);
+
+		//    3,4,3,4,4 scores 18
+		int score3 = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(3,4,3,4,4));
+		assertEquals(18, score3);
+	}
+
+
+	@Test
+	public void fullHouseScoresIncorrectly() {
+
+		// should NOT be 6
+		int score = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(1,1,2,2,2));
+		assertNotEquals(6, score);
+
+		// should NOT be 10
+		int score1 = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(2,2,3,3,4));
+		assertNotEquals(6, score1);
+
+		// should NOT be 6
+		int score2 = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(2,2,3,3,4));
+		assertNotEquals(10, score2);
+
+		// should NOT be 4
+		int score3 = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(2,2,3,3,4));
+		assertNotEquals(4, score3);
+
+		// should NOT be 2
+		int score4 = yatzyScorer.calculateScore(Category.FULLHOUSE, new YatzyRoll(1,1,2,2,2));
+		assertNotEquals(2, score4);
+	}
+
 
 
 }

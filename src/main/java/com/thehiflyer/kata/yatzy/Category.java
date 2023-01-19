@@ -13,7 +13,10 @@ public enum Category {
 	PAIRS(0),
 	TWOPAIRS(0),
 	THREEOFAKIND(0),
-	FOUROFAKIND(0);
+	FOUROFAKIND(0),
+	SMALLSTRAIGHT(0),
+	LARGESTRAIGHT(0),
+	FULLHOUSE(0);
 	// add more categories here as you implement them
 
 	private final int value;
