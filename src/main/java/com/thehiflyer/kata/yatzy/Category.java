@@ -14,8 +14,8 @@ public enum Category {
 	TWOPAIRS(0),
 	THREEOFAKIND(0),
 	FOUROFAKIND(0),
-	SMALLSTRAIGHT(0),
-	LARGESTRAIGHT(0),
+	SMALLSTRAIGHT(15),
+	LARGESTRAIGHT(20),
 	FULLHOUSE(0);
 	// add more categories here as you implement them
 

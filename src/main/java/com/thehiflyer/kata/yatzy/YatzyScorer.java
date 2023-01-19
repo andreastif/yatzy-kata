@@ -19,6 +19,7 @@ public class YatzyScorer {
             case TWOPAIRS -> sum = calculateTwoPair(diceArray);
             case THREEOFAKIND -> sum = calculateThreeOfAKind(diceArray);
             case FOUROFAKIND -> sum = calculateFourOfAKind(diceArray);
+            case SMALLSTRAIGHT, LARGESTRAIGHT -> sum = calculateSmallLargeStraight(diceArray, category);
             case FULLHOUSE -> sum = calculateFullHouse(diceArray);
         }
         return sum;
@@ -76,11 +77,11 @@ public class YatzyScorer {
         return val * 2;
     }
 
-    private int calculateTwoPair(int[] rollResultArray) {
+    private int calculateTwoPair(int[] diceArray) {
         int score = 0;
 
         // Vi Grupperar alla nummer i rollResultArray
-        Map<Integer, Long> numbers = Arrays.stream(rollResultArray)
+        Map<Integer, Long> numbers = Arrays.stream(diceArray)
                 .boxed()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
@@ -133,27 +134,41 @@ public class YatzyScorer {
         return val;
     }
 
-    private int calculateFullHouse(int[] diceArray) {
+    private int calculateSmallLargeStraight(int[] diceArray, Category category) {
         int score = 0;
 
         // Vi Grupperar alla nummer i rollResultArray
         Map<Integer, Long> numbers = Arrays.stream(diceArray)
                 .boxed()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        // Om ej numbers map har 5 nycklar (5 tärningar), så fallerar allt, returnerar 0p
+        if(numbers.size() == 5) {
+            int straightSum = numbers.keySet().stream()
+                    .reduce(0, (entryValue, nextValue) -> entryValue + nextValue);
+            // score = Ternary Operator
+            if (category.equals(Category.SMALLSTRAIGHT)) {
+                score = (straightSum == category.getValue()) ? category.getValue() : 0; // expected 15
+            } else if (category.equals(Category.LARGESTRAIGHT)) {
+                score = (straightSum == category.getValue()) ? category.getValue() : 0; // expected 20
+            }
+        }
+        return score;
+    }
 
+    private int calculateFullHouse(int[] diceArray) {
+        int score = 0;
+        // Vi Grupperar alla nummer i rollResultArray
+        Map<Integer, Long> numbers = Arrays.stream(diceArray)
+                .boxed()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         // Kolla om de finns minst 2 Entry (kåk, 2 par, 3 par tsm), om de gör, summera alla values i entry
         // tar ej TVÅPAR pga att det är en REST kvar i numbers, därav size = 3.
         if (numbers.size() == 2) {
-            System.out.println("WORKS!");
             score += numbers.entrySet().stream()
                     .mapToInt(val -> (val.getKey() * val.getValue().intValue())).sum();
         }
-
-        System.out.println(numbers);
-        System.out.println("Score: " + score);
-        System.out.println("\n");
-
-
         return score;
     }
+
+
 }
